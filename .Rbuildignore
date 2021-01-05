@@ -1,3 +1,5 @@
 ^RFirmMatch\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
+^scripts
+^LICENSE\.md$
