@@ -32,11 +32,7 @@ prepare_tables <- function(.table, .type = c("firm", "match")) {
   .type <- match.arg(.type)
   itab <- .table %>%
     tidyr::pivot_longer(dplyr::matches("name"), names_to = "var", values_to = "name") %>%
-    dplyr::mutate(
-      name = stringi::stri_trans_general(name, "latin-ascii"),
-      name = stringi::stri_replace_all_regex(name, "[[:punct:]]", ""),
-      name = trimws(tolower(name))
-    ) %>%
+    dplyr::mutate(name = standardize_names(name)) %>%
     dplyr::arrange(country_code) %>%
     dplyr::distinct(id, name, .keep_all = TRUE) %>%
     dplyr::left_join(
@@ -82,11 +78,12 @@ prepare_tables <- function(.table, .type = c("firm", "match")) {
 #' @examples
 #' table <- tibble::tibble(
 #'  id = 1:2,
+#'  id2 = 3:4,
 #'  country_code = c("DEU", NA),
 #'   name1 = c("BASF AG", "BASF SE"),
 #'   name2 = c("BASF Germany AG", "BASF Germany SE")
 #' )
-#' tab1 <- prepare_tables(table, "firm")
+#' .table <- tab1 <- prepare_tables(table, "firm")
 #' tab2 <- prepare_tables(table, "match")
 #'
 #' extract_legal_form(tab1)
@@ -94,7 +91,6 @@ prepare_tables <- function(.table, .type = c("firm", "match")) {
 extract_legal_form <- function(.table, .table_le = NULL, .progress = FALSE) {
   table_id <- legal_form <- iso3 <- continent_code <- legal_form_id <-
     country_code <- name <- id <- name_adj <- NULL
-
 
   if (!is.null(.table_le)) {
     table_le <- dplyr::bind_rows(RFirmMatch::table_legal_forms, .table_le)
@@ -132,6 +128,24 @@ extract_legal_form <- function(.table, .table_le = NULL, .progress = FALSE) {
       .groups = "drop"
     )
 
+  tab_le <- tibble::tibble(
+    table_id = unlist(ilst_le),
+    legal_form = rep(names(ilst_le), lengths(ilst_le))
+  ) %>%
+    dplyr::group_by(table_id) %>%
+    dplyr::filter(nchar(legal_form) == max(nchar(legal_form))) %>%
+    dplyr::ungroup() %>%
+    dplyr::left_join(table_le, by = "legal_form") %>%
+    dplyr::left_join(
+      y = dplyr::distinct(RFirmMatch::table_country, iso3, continent_code),
+      by = c("country_code" = "iso3")
+    ) %>%
+    dplyr::group_by(table_id, legal_form) %>%
+    dplyr::summarise(
+      dplyr::across(c(legal_form_id, country_code, continent_code), list),
+      .groups = "drop"
+    )
+
   .table %>%
     dplyr::mutate(table_id = dplyr::row_number()) %>%
     dplyr::left_join(
@@ -142,9 +156,12 @@ extract_legal_form <- function(.table, .table_le = NULL, .progress = FALSE) {
     dplyr::mutate(name_adj = stringi::stri_replace_all_regex(
       name, paste0(legal_form, "$"), ""
     )) %>%
+    dplyr::mutate(
+      name_adj = trimws(name_adj),
+      name_adj = gsub("\\s+", " ", name_adj)
+      ) %>%
     dplyr::select(table_id, id, name, name_adj, dplyr::everything())
 }
-
 
 #' Full String Firm Names Matching
 #'

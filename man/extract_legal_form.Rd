@@ -32,11 +32,12 @@ Extract Legal Forms from Company Names
 \examples{
 table <- tibble::tibble(
  id = 1:2,
+ id2 = 3:4,
  country_code = c("DEU", NA),
   name1 = c("BASF AG", "BASF SE"),
   name2 = c("BASF Germany AG", "BASF Germany SE")
 )
-tab1 <- prepare_tables(table, "firm")
+.table <- tab1 <- prepare_tables(table, "firm")
 tab2 <- prepare_tables(table, "match")
 
 extract_legal_form(tab1)
