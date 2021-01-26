@@ -8,6 +8,7 @@
 #' @examples
 #'  standardize_names("BASF Östereich SE.")
 standardize_names <- function(.name) {
+  . <- NULL
   .name %>%
     stringi::stri_trans_general(., "latin-ascii") %>%
     stringi::stri_replace_all_regex(., "[[:punct:]]", " ") %>%

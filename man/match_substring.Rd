@@ -34,8 +34,8 @@ Sub String Firm Names Matching
 table_firm <- tibble::tibble(
  id = 1:2,
  country_code = c("DEU", NA),
-  name1 = c("BASF AG", "BASF SE"),
-  name2 = c("BASF Germany AG", "BASF Germany SE")
+  name1 = c("BASFss AG", "BASFss SE"),
+  name2 = c("BASFss Germany AG", "BASFss Germany SE")
 )
 table_match <- tibble::tibble(
  id = 1:2,

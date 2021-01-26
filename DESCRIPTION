@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "M.Uckert@outlook.com",
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: Match Firm Names
+Description: Functions for firm name matching against commerical databases. Implementation of string standardization, legal form extraction and full/substring matching.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
