@@ -3,6 +3,7 @@
 export("%>%")
 export(adjust_matches)
 export(extract_legal_form)
+export(match_approximate)
 export(match_name)
 export(match_substring)
 export(prepare_tables)
