@@ -24,4 +24,7 @@ Imports:
     purrr,
     progress,
     stringdist,
-    fuzzyjoin
+    fuzzyjoin,
+    ISOcodes,
+    furrr,
+    future
