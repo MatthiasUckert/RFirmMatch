@@ -27,4 +27,5 @@ Imports:
     fuzzyjoin,
     ISOcodes,
     furrr,
-    future
+    future,
+    openxlsx

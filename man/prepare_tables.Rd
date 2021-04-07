@@ -2,37 +2,27 @@
 % Please edit documentation in R/main_functions.R
 \name{prepare_tables}
 \alias{prepare_tables}
-\title{Prepare Table for Legal Entity Extraction}
+\title{Prepare Firm Name Table}
 \usage{
-prepare_tables(.table, .type = c("firm", "match"))
+prepare_tables(.tab, .regex_names = "name")
 }
 \arguments{
-\item{.table}{A Dataframe with at least 3 columns:\cr
-column 1: 'id': A unique identifier for firm names\cr
-column 2: 'country_code': ISO 3166_2 Alpha 3 country code for the firm's home country\cr
-column 3-n: '...name...': 1-n columns with the prefix or suffix 'name'\cr}
+\item{.tab}{A Dataframe with at least 3 columns: \cr
+id: A company identifier \cr
+...: any number of columns with company names \cr
+country: The country of incorporation of the firm}
 
-\item{.type}{Either 'firm' or 'match'\cr
-In case of a matching table rows w/o a country_code are removes}
+\item{.regex_names}{A regular expression that identifies the columns for the company names}
 }
 \value{
-A dataframe with 5 columns: \cr
-Column 1: 'id' \<chr\>: A column with the ID(s) \cr
-Column 2: 'name' \<chr\>: A column with standardized names \cr
-Column 3: 'country_code' \<chr\>: A column with ISO 3166_2 Alpha 3 country codes \cr
-Column 4: 'continent_code' \<chr\>: A column with continent codes \cr
-Column 5: 'n_id' \<int\>: A column with the number of matched IDs to the firm name
+A dataframe
 }
 \description{
-Prepare Table for Legal Entity Extraction
+Prepare Firm Name Table
 }
 \examples{
-table <- tibble::tibble(
- id = 1:2,
- country_code = c("DEU", NA),
-  name1 = c("BASF AG", "BASF SE"),
-  name2 = c("BASF Germany AG", "BASF Germany SE")
-)
-prepare_tables(table, "firm")
-prepare_tables(table, "match")
+.path <- system.file("extdata", "test_tables.xlsx", package = "RFirmMatch")
+.tab <- openxlsx::read.xlsx(.path)
+prepare_tables(.tab)
+rm(.tab)
 }
